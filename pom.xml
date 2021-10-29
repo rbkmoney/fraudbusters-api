@@ -24,6 +24,8 @@
         <management.port>8023</management.port>
         <exposed.ports>${server.port} ${management.port}</exposed.ports>
         <dockerfile.registry>${env.REGISTRY}</dockerfile.registry>
+        <swag-fraudbusters.version>1.31-a0432bd-server</swag-fraudbusters.version>
+        <fraudbusters-proto.version>1.97-28a6a95</fraudbusters-proto.version>
     </properties>
 
     <dependencies>
@@ -44,6 +46,16 @@
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>shared-resources</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>swag-fraudbusters</artifactId>
+            <version>${swag-fraudbusters.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>fraudbusters-proto</artifactId>
+            <version>${fraudbusters-proto.version}</version>
         </dependency>
 
         <!--spring-->
