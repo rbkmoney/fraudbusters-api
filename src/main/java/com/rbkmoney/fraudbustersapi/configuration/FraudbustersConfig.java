@@ -15,7 +15,8 @@ public class FraudbustersConfig {
 
     @Bean
     public PaymentServiceSrv.Iface paymentServiceSrv(@Value("${fraudbusters.service.payment.url}") Resource resource,
-                                                     @Value("${fraudbusters.service.payment.networkTimeout}") int networkTimeout)
+                                                     @Value("${fraudbusters.service.payment.networkTimeout}")
+                                                             int networkTimeout)
             throws IOException {
         return new THSpawnClientBuilder()
                 .withNetworkTimeout(networkTimeout)
@@ -24,7 +25,8 @@ public class FraudbustersConfig {
 
     @Bean
     public InspectorProxySrv.Iface proxyInspectorSrv(@Value("${fraudbusters.service.inspector.url}") Resource resource,
-                                                     @Value("${fraudbusters.service.inspector.networkTimeout}") int networkTimeout)
+                                                     @Value("${fraudbusters.service.inspector.networkTimeout}")
+                                                             int networkTimeout)
             throws IOException {
         return new THSpawnClientBuilder()
                 .withNetworkTimeout(networkTimeout)

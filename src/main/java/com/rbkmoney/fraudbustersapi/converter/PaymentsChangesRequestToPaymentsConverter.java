@@ -1,6 +1,5 @@
 package com.rbkmoney.fraudbustersapi.converter;
 
-import com.rbkmoney.damsel.fraudbusters.Error;
 import com.rbkmoney.damsel.fraudbusters.PayerType;
 import com.rbkmoney.damsel.fraudbusters.Payment;
 import com.rbkmoney.damsel.fraudbusters.PaymentStatus;
