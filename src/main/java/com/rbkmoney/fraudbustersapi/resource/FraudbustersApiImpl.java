@@ -1,20 +1,20 @@
 package com.rbkmoney.fraudbustersapi.resource;
 
-import com.rbkmoney.damsel.domain.RiskScore;
 import com.rbkmoney.damsel.fraudbusters.Chargeback;
 import com.rbkmoney.damsel.fraudbusters.FraudPayment;
 import com.rbkmoney.damsel.fraudbusters.Refund;
 import com.rbkmoney.damsel.fraudbusters.Withdrawal;
 import com.rbkmoney.damsel.fraudbusters.*;
 import com.rbkmoney.damsel.proxy_inspector.Context;
-import com.rbkmoney.damsel.proxy_inspector.InspectorProxySrv;
+import com.rbkmoney.fraudbustersapi.service.FraudbustersDataService;
+import com.rbkmoney.fraudbustersapi.service.FraudbustersInspectorService;
 import com.rbkmoney.swag.fraudbusters.api.FraudbustersApi;
 import com.rbkmoney.swag.fraudbusters.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.thrift.TException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -24,8 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FraudbustersApiImpl implements FraudbustersApi {
 
-    private final PaymentServiceSrv.Iface paymentServiceSrv;
-    private final InspectorProxySrv.Iface proxyInspectorSrv;
+    private final FraudbustersDataService fraudbustersService;
+    private final FraudbustersInspectorService fraudbustersInspectorService;
 
     private final Converter<ChargebacksRequest, List<Chargeback>> chargebacksRequestToChargebacksConverter;
     private final Converter<FraudPaymentsRequest, List<FraudPayment>> fraudPaymentsRequestToFraudPaymentsConverter;
@@ -37,75 +37,67 @@ public class FraudbustersApiImpl implements FraudbustersApi {
     @Override
     public ResponseEntity<Void> insertChargebacks(ChargebacksRequest chargebacksRequest) {
         log.debug("-> insertChargebacks request: {}", chargebacksRequest);
-        try {
+        if (!CollectionUtils.isEmpty(chargebacksRequest.getChargebacks())) {
             List<Chargeback> chargebacks = chargebacksRequestToChargebacksConverter.convert(chargebacksRequest);
-            paymentServiceSrv.insertChargebacks(chargebacks);
-        } catch (TException ex) {
-            throw new RuntimeException(ex);
+            fraudbustersService.insertChargebacks(chargebacks);
         }
+        log.debug("<- insertChargebacks success request: {}", chargebacksRequest);
         return ResponseEntity.ok().build();
     }
 
     @Override
     public ResponseEntity<java.lang.Void> insertFraudPayments(FraudPaymentsRequest fraudPaymentsRequest) {
         log.debug("-> insertFraudPayments request: {}", fraudPaymentsRequest);
-        try {
+        if (!CollectionUtils.isEmpty(fraudPaymentsRequest.getFraudPayments())) {
             List<FraudPayment> fraudPayments =
                     fraudPaymentsRequestToFraudPaymentsConverter.convert(fraudPaymentsRequest);
-            paymentServiceSrv.insertFraudPayments(fraudPayments);
-        } catch (TException ex) {
-            throw new RuntimeException(ex);
+            fraudbustersService.insertFraudPayments(fraudPayments);
         }
+        log.debug("<- insertFraudPayments success request: {}", fraudPaymentsRequest);
         return ResponseEntity.ok().build();
     }
 
     @Override
     public ResponseEntity<java.lang.Void> insertPaymentsChanges(PaymentsChangesRequest paymentsChangesRequest) {
         log.debug("-> insertPaymentsChanges request: {}", paymentsChangesRequest);
-        try {
+        if (!CollectionUtils.isEmpty(paymentsChangesRequest.getPaymentsChanges())) {
             List<Payment> payments = paymentsChangesRequestToPaymentsConverter.convert(paymentsChangesRequest);
-            paymentServiceSrv.insertPayments(payments);
-        } catch (TException ex) {
-            throw new RuntimeException(ex);
+            fraudbustersService.insertPaymentsChanges(payments);
         }
+        log.debug("<- insertPaymentsChanges success request: {}", paymentsChangesRequest);
         return ResponseEntity.ok().build();
     }
 
     @Override
     public ResponseEntity<java.lang.Void> insertRefunds(RefundsRequest refundsRequest) {
         log.debug("-> insertRefunds request: {}", refundsRequest);
-        try {
+        if (!CollectionUtils.isEmpty(refundsRequest.getRefunds())) {
             List<Refund> refunds = refundsRequestToRefundsConverter.convert(refundsRequest);
-            paymentServiceSrv.insertRefunds(refunds);
-        } catch (TException ex) {
-            throw new RuntimeException(ex);
+            fraudbustersService.insertRefunds(refunds);
         }
+        log.debug("<- insertRefunds success request: {}", refundsRequest);
         return ResponseEntity.ok().build();
     }
 
     @Override
     public ResponseEntity<java.lang.Void> insertWithdrawals(WithdrawalsRequest withdrawalsRequest) {
         log.debug("-> insertWithdrawals request: {}", withdrawalsRequest);
-        try {
-            paymentServiceSrv.insertWithdrawals(withdrawalsRequestToWithdrawalsConverter.convert(withdrawalsRequest));
-        } catch (TException ex) {
-            throw new RuntimeException(ex);
+        if (!CollectionUtils.isEmpty(withdrawalsRequest.getWithdrawals())) {
+            List<Withdrawal> withdrawals = withdrawalsRequestToWithdrawalsConverter.convert(withdrawalsRequest);
+            fraudbustersService.insertWithdrawals(withdrawals);
         }
+        log.debug("<- insertWithdrawals success request: {}", withdrawalsRequest);
         return ResponseEntity.ok().build();
     }
 
     @Override
     public ResponseEntity<RiskScoreResult> inspectPayment(PaymentInspectRequest paymentInspectRequest) {
         log.debug("-> inspectPayment request: {}", paymentInspectRequest);
-        try {
-            Context context = paymentInspectRequestToContextConverter.convert(paymentInspectRequest);
-            RiskScore riskScore = proxyInspectorSrv.inspectPayment(context);
-            RiskScoreResult riskScoreResult = new RiskScoreResult();
-            riskScoreResult.setResult(com.rbkmoney.swag.fraudbusters.model.RiskScore.fromValue(riskScore.name()));
-            log.debug("<- inspectPayment riskScoreResult: {}", riskScoreResult);
-            return ResponseEntity.ok(riskScoreResult);
-        } catch (TException ex) {
-            throw new RuntimeException(ex);
-        }
+        Context context = paymentInspectRequestToContextConverter.convert(paymentInspectRequest);
+        RiskScore riskScore = fraudbustersInspectorService.inspectPayment(context);
+        RiskScoreResult riskScoreResult = new RiskScoreResult();
+        riskScoreResult.setResult(riskScore);
+        log.debug("<- inspectPayment riskScoreResult: {}", riskScoreResult);
+        return ResponseEntity.ok(riskScoreResult);
     }
 }
