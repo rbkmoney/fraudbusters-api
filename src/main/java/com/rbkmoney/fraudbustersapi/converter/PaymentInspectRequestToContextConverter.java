@@ -62,8 +62,8 @@ public class PaymentInspectRequestToContextConverter implements Converter<Paymen
                                                         .setPaymentTool(PaymentTool.bank_card(new BankCard()
                                                                 .setPaymentSystem(new PaymentSystemRef()
                                                                         .setId(bankCard.getPaymentSystem()))
-                                                                .setIssuerCountry(
-                                                                        CountryCode.valueOf(bankCard.getBinCountryCode()))
+                                                                .setIssuerCountry(CountryCode.valueOf(
+                                                                        bankCard.getBinCountryCode()))
                                                                 .setBankName(bankCard.getBankName())
                                                                 .setBin(bankCard.getBin())
                                                                 .setLastDigits(bankCard.getLastDigits())
