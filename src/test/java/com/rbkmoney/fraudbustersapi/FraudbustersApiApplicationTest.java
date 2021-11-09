@@ -33,7 +33,6 @@ class FraudbustersApiApplicationTest {
     public static final String FRAUDBUSTERS_INSPECT_PAYMENTS = "/fraudbusters/inspect-payment";
     public static final String BASE_URL = "http://localhost:";
 
-
     @LocalServerPort
     int serverPort;
 
@@ -68,7 +67,7 @@ class FraudbustersApiApplicationTest {
     }
 
     @Test
-    public void insertRefundsTest() {
+    void insertRefundsTest() {
         RefundsRequest request = new RefundsRequest();
         restTemplate.postForEntity(initUrl(FRAUDBUSTERS_REFUNDS), request, Void.class);
         verify(fraudbustersDataService, times(0)).insertRefunds(any());
@@ -83,12 +82,8 @@ class FraudbustersApiApplicationTest {
         verify(fraudbustersDataService, times(1)).insertRefunds(any());
     }
 
-    private String initUrl(String fraudbustersRefunds) {
-        return BASE_URL + serverPort + fraudbustersRefunds;
-    }
-
     @Test
-    public void insertPaymentsTest() {
+    void insertPaymentsTest() {
         PaymentsChangesRequest request = new PaymentsChangesRequest();
         restTemplate.postForEntity(initUrl(FRAUDBUSTERS_PAYMENTS), request, Void.class);
         verify(fraudbustersDataService, times(0)).insertPaymentsChanges(any());
@@ -104,7 +99,7 @@ class FraudbustersApiApplicationTest {
     }
 
     @Test
-    public void insertFraudPaymentsTest() {
+    void insertFraudPaymentsTest() {
         FraudPaymentsRequest request = new FraudPaymentsRequest();
         restTemplate.postForEntity(initUrl(FRAUDBUSTERS_FRAUD_PAYMENTS), request, Void.class);
         verify(fraudbustersDataService, times(0)).insertFraudPayments(any());
@@ -120,7 +115,7 @@ class FraudbustersApiApplicationTest {
     }
 
     @Test
-    public void insertWithdrawalsTest() {
+    void insertWithdrawalsTest() {
         WithdrawalsRequest request = new WithdrawalsRequest();
         restTemplate.postForEntity(initUrl(FRAUDBUSTERS_WITHDRAWALS), request, Void.class);
         verify(fraudbustersDataService, times(0)).insertWithdrawals(any());
@@ -136,7 +131,7 @@ class FraudbustersApiApplicationTest {
     }
 
     @Test
-    public void inspectPaymentsTest() {
+    void inspectPaymentsTest() {
         when(fraudbustersInspectorService.inspectPayment(any())).thenReturn(RiskScore.FATAL);
 
         PaymentInspectRequest request = new PaymentInspectRequest();
@@ -151,6 +146,10 @@ class FraudbustersApiApplicationTest {
         request.context(initPaymentContext());
         restTemplate.postForEntity(initUrl(FRAUDBUSTERS_INSPECT_PAYMENTS), request, RiskScoreResult.class);
         verify(fraudbustersInspectorService, times(1)).inspectPayment(any());
+    }
+
+    private String initUrl(String fraudbustersRefunds) {
+        return BASE_URL + serverPort + fraudbustersRefunds;
     }
 
 }
