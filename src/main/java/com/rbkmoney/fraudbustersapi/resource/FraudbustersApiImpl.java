@@ -46,7 +46,7 @@ public class FraudbustersApiImpl implements FraudbustersApi {
     }
 
     @Override
-    public ResponseEntity<java.lang.Void> insertFraudPayments(FraudPaymentsRequest fraudPaymentsRequest) {
+    public ResponseEntity<Void> insertFraudPayments(FraudPaymentsRequest fraudPaymentsRequest) {
         log.debug("-> insertFraudPayments request: {}", fraudPaymentsRequest);
         if (!CollectionUtils.isEmpty(fraudPaymentsRequest.getFraudPayments())) {
             List<FraudPayment> fraudPayments =
@@ -58,7 +58,7 @@ public class FraudbustersApiImpl implements FraudbustersApi {
     }
 
     @Override
-    public ResponseEntity<java.lang.Void> insertPaymentsChanges(PaymentsChangesRequest paymentsChangesRequest) {
+    public ResponseEntity<Void> insertPaymentsChanges(PaymentsChangesRequest paymentsChangesRequest) {
         log.debug("-> insertPaymentsChanges request: {}", paymentsChangesRequest);
         if (!CollectionUtils.isEmpty(paymentsChangesRequest.getPaymentsChanges())) {
             List<Payment> payments = paymentsChangesRequestToPaymentsConverter.convert(paymentsChangesRequest);
@@ -69,7 +69,7 @@ public class FraudbustersApiImpl implements FraudbustersApi {
     }
 
     @Override
-    public ResponseEntity<java.lang.Void> insertRefunds(RefundsRequest refundsRequest) {
+    public ResponseEntity<Void> insertRefunds(RefundsRequest refundsRequest) {
         log.debug("-> insertRefunds request: {}", refundsRequest);
         if (!CollectionUtils.isEmpty(refundsRequest.getRefunds())) {
             List<Refund> refunds = refundsRequestToRefundsConverter.convert(refundsRequest);
@@ -80,7 +80,7 @@ public class FraudbustersApiImpl implements FraudbustersApi {
     }
 
     @Override
-    public ResponseEntity<java.lang.Void> insertWithdrawals(WithdrawalsRequest withdrawalsRequest) {
+    public ResponseEntity<Void> insertWithdrawals(WithdrawalsRequest withdrawalsRequest) {
         log.debug("-> insertWithdrawals request: {}", withdrawalsRequest);
         if (!CollectionUtils.isEmpty(withdrawalsRequest.getWithdrawals())) {
             List<Withdrawal> withdrawals = withdrawalsRequestToWithdrawalsConverter.convert(withdrawalsRequest);

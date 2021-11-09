@@ -27,53 +27,65 @@ public class PaymentInspectRequestToContextConverter implements Converter<Paymen
         MerchantInfo merchantInfo = context.getMerchantInfo();
         return new Context()
                 .setPayment(new PaymentInfo()
-                        .setShop(new Shop()
-                                .setId(merchantInfo.getShopId())
-                                .setDetails(new ShopDetails()
-                                        .setName(MOCK_UNUSED_DATA)
-                                )
-                                .setCategory(new Category()
-                                        .setName(MOCK_UNUSED_DATA)
-                                        .setDescription(MOCK_UNUSED_DATA))
-                                .setLocation(ShopLocation.url(MOCK_UNUSED_DATA))
-                        )
-                        .setParty(new Party()
-                                .setPartyId(merchantInfo.getPartyId())
-                        )
-                        .setInvoice(new Invoice()
-                                .setId(request.getContext().getId())
-                                .setDetails(new InvoiceDetails()
-                                        // TODO add product to swag
-                                        .setProduct(MOCK_UNUSED_DATA))
-                                .setCreatedAt(context.getCreatedAt().toInstant().toString())
-                                .setDue(context.getCreatedAt().toInstant().toString())
-                        )
-
-                        .setPayment(new InvoicePayment()
-                                .setCost(cacheToInternalDtoConverter.convert(context.getCashInfo()))
-                                .setId(context.getId())
-                                .setCreatedAt(context.getCreatedAt().toInstant().toString())
-                                .setPayer(Payer.payment_resource(new PaymentResourcePayer()
-                                                .setContactInfo(new ContactInfo()
-                                                        .setEmail(context.getPayerInfo().getEmail())
-                                                        .setPhoneNumber(context.getPayerInfo().getPhone())
-                                                )
-                                                .setResource(new DisposablePaymentResource()
-                                                        .setPaymentTool(PaymentTool.bank_card(new BankCard()
-                                                                .setPaymentSystem(new PaymentSystemRef()
-                                                                        .setId(bankCard.getPaymentSystem()))
-                                                                .setIssuerCountry(CountryCode.valueOf(
-                                                                        bankCard.getBinCountryCode()))
-                                                                .setBankName(bankCard.getBankName())
-                                                                .setBin(bankCard.getBin())
-                                                                .setLastDigits(bankCard.getLastDigits())
-                                                                .setToken(bankCard.getCardToken())
-                                                        ))
-                                                )
-                                        )
-                                )
-                                .setMakeRecurrent(context.getRecurrent())
-                        )
+                        .setShop(initShop(merchantInfo))
+                        .setParty(initParty(merchantInfo))
+                        .setInvoice(initInvoice(request, context))
+                        .setPayment(initInvoicePayment(context, bankCard))
                 );
+    }
+
+    private InvoicePayment initInvoicePayment(PaymentContext context,
+                                              com.rbkmoney.swag.fraudbusters.model.BankCard bankCard) {
+        return new InvoicePayment()
+                .setCost(cacheToInternalDtoConverter.convert(context.getCashInfo()))
+                .setId(context.getId())
+                .setCreatedAt(context.getCreatedAt().toInstant().toString())
+                .setPayer(Payer.payment_resource(new PaymentResourcePayer()
+                                .setContactInfo(new ContactInfo()
+                                        .setEmail(context.getPayerInfo().getEmail())
+                                        .setPhoneNumber(context.getPayerInfo().getPhone())
+                                )
+                                .setResource(new DisposablePaymentResource()
+                                        .setPaymentTool(PaymentTool.bank_card(new BankCard()
+                                                .setPaymentSystem(new PaymentSystemRef()
+                                                        .setId(bankCard.getPaymentSystem()))
+                                                .setIssuerCountry(CountryCode.valueOf(
+                                                        bankCard.getBinCountryCode()))
+                                                .setBankName(bankCard.getBankName())
+                                                .setBin(bankCard.getBin())
+                                                .setLastDigits(bankCard.getLastDigits())
+                                                .setToken(bankCard.getCardToken())
+                                        ))
+                                )
+                        )
+                )
+                .setMakeRecurrent(context.getRecurrent());
+    }
+
+    private Invoice initInvoice(PaymentInspectRequest request, PaymentContext context) {
+        return new Invoice()
+                .setId(request.getContext().getId())
+                .setDetails(new InvoiceDetails()
+                        // TODO add product to swag
+                        .setProduct(MOCK_UNUSED_DATA))
+                .setCreatedAt(context.getCreatedAt().toInstant().toString())
+                .setDue(context.getCreatedAt().toInstant().toString());
+    }
+
+    private Party initParty(MerchantInfo merchantInfo) {
+        return new Party()
+                .setPartyId(merchantInfo.getPartyId());
+    }
+
+    private Shop initShop(MerchantInfo merchantInfo) {
+        return new Shop()
+                .setId(merchantInfo.getShopId())
+                .setDetails(new ShopDetails()
+                        .setName(MOCK_UNUSED_DATA)
+                )
+                .setCategory(new Category()
+                        .setName(MOCK_UNUSED_DATA)
+                        .setDescription(MOCK_UNUSED_DATA))
+                .setLocation(ShopLocation.url(MOCK_UNUSED_DATA));
     }
 }

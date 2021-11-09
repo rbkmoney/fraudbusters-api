@@ -5,7 +5,7 @@ import com.rbkmoney.damsel.proxy_inspector.InspectorProxySrv;
 import com.rbkmoney.fraudbustersapi.service.FraudbustersDataService;
 import com.rbkmoney.fraudbustersapi.service.FraudbustersInspectorService;
 import com.rbkmoney.swag.fraudbusters.model.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = FraudbustersApiApplication.class)
-public class FraudbustersApiApplicationTest {
+class FraudbustersApiApplicationTest {
 
     public static final String FRAUDBUSTERS_CHARGEBACKS = "/fraudbusters/chargebacks";
     public static final String FRAUDBUSTERS_REFUNDS = "/fraudbusters/refunds";
@@ -49,7 +49,7 @@ public class FraudbustersApiApplicationTest {
     RestTemplate restTemplate = new RestTemplate();
 
     @Test
-    public void insertChargebacksTest() {
+    void insertChargebacksTest() {
         ChargebacksRequest request = new ChargebacksRequest();
         restTemplate.postForEntity(initUrl(FRAUDBUSTERS_CHARGEBACKS), request, Void.class);
         verify(fraudbustersDataService, times(0)).insertChargebacks(any());

@@ -12,7 +12,7 @@ public class ClientInfoToInternalDtoConverter
     public ClientInfo convert(com.rbkmoney.swag.fraudbusters.model.UserInfo userInfo) {
         return new ClientInfo()
                 .setFingerprint(userInfo.getFingerprint())
-                .setEmail(userInfo.getFingerprint())
+                .setEmail(userInfo.getEmail())
                 .setIp(userInfo.getIp());
         //TODO добавить телефон в thrift
     }
