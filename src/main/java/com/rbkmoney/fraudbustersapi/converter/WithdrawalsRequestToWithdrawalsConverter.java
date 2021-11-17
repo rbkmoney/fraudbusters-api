@@ -1,5 +1,6 @@
 package com.rbkmoney.fraudbustersapi.converter;
 
+import com.rbkmoney.damsel.domain.CurrencyRef;
 import com.rbkmoney.damsel.fraudbusters.Account;
 import com.rbkmoney.damsel.fraudbusters.Resource;
 import com.rbkmoney.damsel.fraudbusters.Withdrawal;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WithdrawalsRequestToWithdrawalsConverter implements Converter<WithdrawalsRequest, List<Withdrawal>> {
 
+    public static final String UNKNOWN = "UNKNOWN";
     private final CacheToInternalDtoConverter cacheToInternalDtoConverter;
     private final ErrorToInternalDtoConverter errorToInternalDtoConverter;
     private final ProviderInfoToInternalDtoConverter providerInfoToInternalDtoConverter;
@@ -37,7 +39,9 @@ public class WithdrawalsRequestToWithdrawalsConverter implements Converter<Withd
                 .setStatus(WithdrawalStatus.valueOf(item.getStatus().getValue()))
                 .setError(errorToInternalDtoConverter.convert(item.getError()))
                 .setAccount(new Account()
-                        .setId(item.getAccountId()))
+                        .setId(item.getAccount().getAccountId())
+                        .setIdentity(UNKNOWN)
+                        .setCurrency(new CurrencyRef(item.getAccount().getCurrency())))
                 .setDestinationResource(Resource.bank_card(bankCardToInternalDtoConverter.convert(item.getBankCard())));
     }
 

@@ -72,7 +72,9 @@ public class ApiBeanGenerator {
                 .providerInfo(initProviderInfo())
                 .bankCard(initBankCard())
                 .cashInfo(initCashInfo())
-                .accountId(ACCOUNT_ID);
+                .account(new Account()
+                        .accountId(ACCOUNT_ID)
+                        .currency("RUB"));
     }
 
     public static PaymentChange initPaymentChange() {
