@@ -25,7 +25,7 @@
         <exposed.ports>${server.port} ${management.port}</exposed.ports>
         <dockerfile.registry>${env.REGISTRY}</dockerfile.registry>
         <swag-fraudbusters.version>1.35-11f2126-server</swag-fraudbusters.version>
-        <fraudbusters-proto.version>1.97-28a6a95</fraudbusters-proto.version>
+        <fraudbusters-proto.version>1.99-2a8f6ca</fraudbusters-proto.version>
     </properties>
 
     <dependencies>

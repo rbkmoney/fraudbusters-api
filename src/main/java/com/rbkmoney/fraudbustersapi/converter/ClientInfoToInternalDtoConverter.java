@@ -13,8 +13,8 @@ public class ClientInfoToInternalDtoConverter
         return new ClientInfo()
                 .setFingerprint(userInfo.getFingerprint())
                 .setEmail(userInfo.getEmail())
+                .setPhone(userInfo.getPhone())
                 .setIp(userInfo.getIp());
-        //TODO добавить телефон в thrift
     }
 
 }
